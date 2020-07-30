@@ -94,7 +94,7 @@ public class RDFConfigurationReaderTest {
 
     @Test
     public void testRDFReaderForMLAgorithm() {
-        List<LearningParameter> mlParameters = new ArrayList<>();
+        List<LearningParameter<?>> mlParameters = new ArrayList<>();
         LearningParameter lp = new LearningParameter();
         lp.setName("max execution time in minutes");
         lp.setValue(60);

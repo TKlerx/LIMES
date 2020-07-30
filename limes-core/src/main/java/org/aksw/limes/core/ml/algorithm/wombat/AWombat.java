@@ -226,7 +226,7 @@ public abstract class AWombat extends ACoreMLAlgorithm {
     }
 
     @Override
-    protected void init(List<LearningParameter> lp, ACache sourceCache, ACache targetCache) {
+    protected void init(List<LearningParameter<?>> lp, ACache sourceCache, ACache targetCache) {
         super.init(lp, sourceCache, targetCache);
         sourcePropertiesCoverageMap = LinearSelfConfigurator.getPropertyStats(sourceCache, getMinPropertyCoverage());
         targetPropertiesCoverageMap = LinearSelfConfigurator.getPropertyStats(targetCache, getMinPropertyCoverage());
@@ -450,36 +450,37 @@ public abstract class AWombat extends ACoreMLAlgorithm {
         double propertyLearningRate = 0.9;
         double overallPenaltyWeight = 0.5d;
         boolean verbose = false;
-        Set<String> measures = new HashSet<>(Arrays.asList("jaccard", "cosine", "qgrams"));
+		Set<MeasureType> measures = new HashSet<MeasureType>(Arrays.asList(MeasureType.JACCARD, MeasureType.COSINE, MeasureType.QGRAMS));
+
 
         learningParameters = new ArrayList<>();
-        learningParameters.add(new LearningParameter(PARAMETER_MAX_REFINEMENT_TREE_SIZE, maxRefineTreeSize, Long.class,
-                10d, Long.MAX_VALUE, 10d, PARAMETER_MAX_REFINEMENT_TREE_SIZE));
-        learningParameters.add(new LearningParameter(PARAMETER_MAX_ITERATIONS_NUMBER, maxIterationNumber, Integer.class,
-                1d, Integer.MAX_VALUE, 10d, PARAMETER_MAX_ITERATIONS_NUMBER));
-        learningParameters.add(new LearningParameter(PARAMETER_MAX_ITERATION_TIME_IN_MINUTES, maxIterationTimeInMin,
-                Integer.class, 1d, Integer.MAX_VALUE, 1, PARAMETER_MAX_ITERATION_TIME_IN_MINUTES));
-        learningParameters.add(new LearningParameter(PARAMETER_EXECUTION_TIME_IN_MINUTES, maxExecutionTimeInMin,
-                Integer.class, 1d, Integer.MAX_VALUE, 1, PARAMETER_EXECUTION_TIME_IN_MINUTES));
-        learningParameters.add(new LearningParameter(PARAMETER_MAX_FITNESS_THRESHOLD, maxFitnessThreshold, Double.class,
+        learningParameters.add(new LearningParameter<Long>(PARAMETER_MAX_REFINEMENT_TREE_SIZE, maxRefineTreeSize, 
+                10l, Long.MAX_VALUE, 10l, PARAMETER_MAX_REFINEMENT_TREE_SIZE));
+        learningParameters.add(new LearningParameter<Integer>(PARAMETER_MAX_ITERATIONS_NUMBER, maxIterationNumber, 
+                1, Integer.MAX_VALUE, 10, PARAMETER_MAX_ITERATIONS_NUMBER));
+        learningParameters.add(new LearningParameter<Integer>(PARAMETER_MAX_ITERATION_TIME_IN_MINUTES, maxIterationTimeInMin,
+                 1, Integer.MAX_VALUE, 1, PARAMETER_MAX_ITERATION_TIME_IN_MINUTES));
+        learningParameters.add(new LearningParameter<Integer>(PARAMETER_EXECUTION_TIME_IN_MINUTES, maxExecutionTimeInMin,
+                 1, Integer.MAX_VALUE, 1, PARAMETER_EXECUTION_TIME_IN_MINUTES));
+        learningParameters.add(new LearningParameter<Double>(PARAMETER_MAX_FITNESS_THRESHOLD, maxFitnessThreshold,
                 0d, 1d, 0.01d, PARAMETER_MAX_FITNESS_THRESHOLD));
-        learningParameters.add(new LearningParameter(PARAMETER_MIN_PROPERTY_COVERAGE, minPropertyCoverage, Double.class,
+        learningParameters.add(new LearningParameter<Double>(PARAMETER_MIN_PROPERTY_COVERAGE, minPropertyCoverage, 
                 0d, 1d, 0.01d, PARAMETER_MIN_PROPERTY_COVERAGE));
-        learningParameters.add(new LearningParameter(PARAMETER_PROPERTY_LEARNING_RATE, propertyLearningRate,
-                Double.class, 0d, 1d, 0.01d, PARAMETER_PROPERTY_LEARNING_RATE));
-        learningParameters.add(new LearningParameter(PARAMETER_OVERALL_PENALTY_WEIGHT, overallPenaltyWeight,
-                Double.class, 0d, 1d, 0.01d, PARAMETER_OVERALL_PENALTY_WEIGHT));
-        learningParameters.add(new LearningParameter(PARAMETER_CHILDREN_PENALTY_WEIGHT, childrenPenaltyWeight,
-                Double.class, 0d, 1d, 0.01d, PARAMETER_CHILDREN_PENALTY_WEIGHT));
-        learningParameters.add(new LearningParameter(PARAMETER_COMPLEXITY_PENALTY_WEIGHT, complexityPenaltyWeight,
-                Double.class, 0d, 1d, 0.01d, PARAMETER_COMPLEXITY_PENALTY_WEIGHT));
-        learningParameters.add(new LearningParameter(PARAMETER_FMEASURE_BETA, beta, Double.class, 0d, Double.MAX_VALUE,
+        learningParameters.add(new LearningParameter<Double>(PARAMETER_PROPERTY_LEARNING_RATE, propertyLearningRate,
+                 0d, 1d, 0.01d, PARAMETER_PROPERTY_LEARNING_RATE));
+        learningParameters.add(new LearningParameter<Double>(PARAMETER_OVERALL_PENALTY_WEIGHT, overallPenaltyWeight,
+                 0d, 1d, 0.01d, PARAMETER_OVERALL_PENALTY_WEIGHT));
+        learningParameters.add(new LearningParameter<Double>(PARAMETER_CHILDREN_PENALTY_WEIGHT, childrenPenaltyWeight,
+                 0d, 1d, 0.01d, PARAMETER_CHILDREN_PENALTY_WEIGHT));
+        learningParameters.add(new LearningParameter<Double>(PARAMETER_COMPLEXITY_PENALTY_WEIGHT, complexityPenaltyWeight,
+                 0d, 1d, 0.01d, PARAMETER_COMPLEXITY_PENALTY_WEIGHT));
+        learningParameters.add(new LearningParameter<Double>(PARAMETER_FMEASURE_BETA, beta, 0d, Double.MAX_VALUE,
                 0.01d, "beta parameter for f-measure"));
         learningParameters
-                .add(new LearningParameter(PARAMETER_VERBOSE, verbose, Boolean.class, 0, 1, 0, PARAMETER_VERBOSE));
-        learningParameters.add(new LearningParameter(PARAMETER_ATOMIC_MEASURES, measures, MeasureType.class, 0, 0, 0,
+                .add(new LearningParameter<Boolean>(PARAMETER_VERBOSE, verbose, false, true, null, PARAMETER_VERBOSE));
+        learningParameters.add(new LearningParameter<Set<MeasureType>>(PARAMETER_ATOMIC_MEASURES, measures, null, null, null,
                 PARAMETER_ATOMIC_MEASURES));
-        learningParameters.add(new LearningParameter(PARAMETER_SAVE_MAPPING, saveMapping, Boolean.class, 0, 1, 0,
+        learningParameters.add(new LearningParameter<Boolean>(PARAMETER_SAVE_MAPPING, saveMapping, false, true, null,
                 PARAMETER_SAVE_MAPPING));
     }
 

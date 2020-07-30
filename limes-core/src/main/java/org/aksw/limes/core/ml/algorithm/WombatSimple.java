@@ -54,7 +54,7 @@ public class WombatSimple extends AWombat {
     }
 
     @Override
-    protected void init(List<LearningParameter> lp, ACache sourceCache, ACache targetCache) {
+    protected void init(List<LearningParameter<?>> lp, ACache sourceCache, ACache targetCache) {
         super.init(lp, sourceCache, targetCache);
         sourceUris = sourceCache.getAllUris();
         targetUris = targetCache.getAllUris();

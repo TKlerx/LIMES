@@ -1,5 +1,7 @@
 package org.aksw.limes.core.ml.algorithm;
 
+import java.text.NumberFormat;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,21 +19,20 @@ import org.slf4j.LoggerFactory;
  * @version Jul 15, 2016
  */
 public abstract class ACoreMLAlgorithm {
-    protected static Logger logger = LoggerFactory.getLogger(ACoreMLAlgorithm.class);
+	protected static Logger logger = LoggerFactory.getLogger(ACoreMLAlgorithm.class);
 
+	protected List<LearningParameter<?>> learningParameters = new ArrayList<>();
 
-    protected List<LearningParameter> learningParameters = new ArrayList<>();
+	protected ACache sourceCache;
 
-    protected ACache sourceCache;
+	protected ACache targetCache;
 
-    protected ACache targetCache;
-    
-    protected Configuration configuration;
+	protected Configuration configuration;
 
-    /**
-     * @return the configuration
-     */
-    public Configuration getConfiguration() {
+	/**
+	 * @return the configuration
+	 */
+	public Configuration getConfiguration() {
 		return configuration;
 	}
 
@@ -40,160 +41,184 @@ public abstract class ACoreMLAlgorithm {
 	 */
 	public void setConfiguration(Configuration configuration) {
 		this.configuration = configuration;
-		
+
 	}
 
 	/**
-     * Name of the core ML algorithm.
-     *
-     * @return Name of the core ML algorithm.
-     */
-    protected abstract String getName();
+	 * Name of the core ML algorithm.
+	 *
+	 * @return Name of the core ML algorithm.
+	 */
+	protected abstract String getName();
 
-    /**
-     * @return current core ML algorithm parameters and their default values
-     */
-    protected List<LearningParameter> getParameters() {
-        return learningParameters;
-    }
-    
-    /**
-     * Set default ACoreMLAlgorithm parameters values
-     */
-    public abstract void setDefaultParameters();
+	/**
+	 * @return current core ML algorithm parameters and their default values
+	 */
+	protected List<LearningParameter<?>> getParameters() {
+		return learningParameters;
+	}
 
-    /**
-     * Initialize the core ML algorithm.
-     *
-     * @param learningParameters learning parameters
-     * @param sourceCache the source cache
-     * @param targetCache the target cache
-     */
-    protected void init(List<LearningParameter> learningParameters, ACache sourceCache, ACache targetCache) {
-        if (learningParameters != null) {
-            //only update existing parameters
-            for(LearningParameter lp : learningParameters){ 
-                setParameter(lp.getName(), lp.getValue());
-            }
-        }
-        this.sourceCache = sourceCache;
-        this.targetCache = targetCache;
-    }
+	/**
+	 * Set default ACoreMLAlgorithm parameters values
+	 */
+	public abstract void setDefaultParameters();
 
-    /**
-     * Learning method for supervised core ML algorithm implementations, where
-     * the confidence values for each pair in the trainingData determine its
-     * truth degree.
-     *
-     * @param trainingData used for learning
-     * @return wrap with results
-     * @throws UnsupportedMLImplementationException if ML implementation is not supported
-     */
-    protected abstract MLResults learn(AMapping trainingData)
-            throws UnsupportedMLImplementationException;
+	/**
+	 * Initialize the core ML algorithm.
+	 *
+	 * @param learningParameters learning parameters
+	 * @param sourceCache        the source cache
+	 * @param targetCache        the target cache
+	 */
+	protected void init(List<LearningParameter<?>> learningParameters, ACache sourceCache, ACache targetCache) {
+		if (learningParameters != null) {
+			// only update existing parameters
+			for (LearningParameter<?> lp : learningParameters) {
+				setParameter(lp.getName(), lp.getValue());
+			}
+		}
+		this.sourceCache = sourceCache;
+		this.targetCache = targetCache;
+	}
 
-    /**
-     * Learning method for unsupervised core ML algorithm implementations.
-     *
-     * @param pfm pseudo F-measure for unsupervised learning
-     * @return wrap with results
-     * @throws UnsupportedMLImplementationException if ML implementation is not supported
-     */
-    protected abstract MLResults learn(PseudoFMeasure pfm)
-            throws UnsupportedMLImplementationException;
+	/**
+	 * Learning method for supervised core ML algorithm implementations, where the
+	 * confidence values for each pair in the trainingData determine its truth
+	 * degree.
+	 *
+	 * @param trainingData used for learning
+	 * @return wrap with results
+	 * @throws UnsupportedMLImplementationException if ML implementation is not
+	 *                                              supported
+	 */
+	protected abstract MLResults learn(AMapping trainingData) throws UnsupportedMLImplementationException;
 
-    /**
-     * Predict/generate links from source to target based on mlModel.
-     *
-     * @param source Cache
-     * @param target Cache
-     * @param mlModel result of training phase
-     * @return the mapping from source to target
-     */
-    protected abstract AMapping predict(ACache source, ACache target,
-                                        MLResults mlModel);
+	/**
+	 * Learning method for unsupervised core ML algorithm implementations.
+	 *
+	 * @param pfm pseudo F-measure for unsupervised learning
+	 * @return wrap with results
+	 * @throws UnsupportedMLImplementationException if ML implementation is not
+	 *                                              supported
+	 */
+	protected abstract MLResults learn(PseudoFMeasure pfm) throws UnsupportedMLImplementationException;
 
-    /**
-     * Check whether the mlType is supported.
-     *
-     * @param mlType machine learning implementation type
-     * @return a boolean value
-     */
-    protected abstract boolean supports(MLImplementationType mlType);
+	/**
+	 * Predict/generate links from source to target based on mlModel.
+	 *
+	 * @param source  Cache
+	 * @param target  Cache
+	 * @param mlModel result of training phase
+	 * @return the mapping from source to target
+	 */
+	protected abstract AMapping predict(ACache source, ACache target, MLResults mlModel);
 
-    /**
-     * Get a set of examples to be added to the mapping.
-     *
-     * @param size of the examples
-     * @return the mapping
-     * @throws UnsupportedMLImplementationException Exception
-     */
-    protected abstract AMapping getNextExamples(int size)
-            throws UnsupportedMLImplementationException;
+	/**
+	 * Check whether the mlType is supported.
+	 *
+	 * @param mlType machine learning implementation type
+	 * @return a boolean value
+	 */
+	protected abstract boolean supports(MLImplementationType mlType);
 
-    /**
-     * Learning method for supervised active core ML algorithm implementations.
-     *
-     * @param oracleMapping mapping from the oracle
-     * @return wrap with results
-     * @throws UnsupportedMLImplementationException if ML implementation is not supported
-     */
-    protected abstract MLResults activeLearn(AMapping oracleMapping)
-            throws UnsupportedMLImplementationException;
-    
-    /**
-     * Learning method for supervised active core ML algorithm implementations
-     * Normally, it is used as a first step to initialize the ML model 
-     * before going through the active learning process
-     * 
-     * @return wrap with results
-     * @throws UnsupportedMLImplementationException if ML implementation is not supported
-     */
-    protected abstract MLResults activeLearn() throws UnsupportedMLImplementationException;
+	/**
+	 * Get a set of examples to be added to the mapping.
+	 *
+	 * @param size of the examples
+	 * @return the mapping
+	 * @throws UnsupportedMLImplementationException Exception
+	 */
+	protected abstract AMapping getNextExamples(int size) throws UnsupportedMLImplementationException;
 
-    
-    /**
-     * Get parameter by name.
-     * 
-     * @param name parameter name
-     * @return the parameter as Object
-     * @throws NoSuchParameterException if parameter is not exists
-     */
-    protected Object getParameter(String name) {
-    	for(LearningParameter par : learningParameters)
-    		if(par.getName().equals(name))
-    			return par.getValue();
-    	return new NoSuchParameterException(name);
-    }
-    
-    
-    /**
-     * @param par parameter name
-     * @param val parameter value
-     */
-    public void setParameter(String par, Object val) {
-        for(LearningParameter lp : learningParameters)
-            if(lp.getName().equals(par)) {
-                lp.setValue(val);
-                return;
-            }
-        // if not found
-        throw new NoSuchParameterException(par);
-    }
+	/**
+	 * Learning method for supervised active core ML algorithm implementations.
+	 *
+	 * @param oracleMapping mapping from the oracle
+	 * @return wrap with results
+	 * @throws UnsupportedMLImplementationException if ML implementation is not
+	 *                                              supported
+	 */
+	protected abstract MLResults activeLearn(AMapping oracleMapping) throws UnsupportedMLImplementationException;
 
-    /**
-     * @return the source cache
-     */
-    public ACache getSourceCache() {
-        return sourceCache;
-    }
+	/**
+	 * Learning method for supervised active core ML algorithm implementations
+	 * Normally, it is used as a first step to initialize the ML model before going
+	 * through the active learning process
+	 * 
+	 * @return wrap with results
+	 * @throws UnsupportedMLImplementationException if ML implementation is not
+	 *                                              supported
+	 */
+	protected abstract MLResults activeLearn() throws UnsupportedMLImplementationException;
 
-    /**
-     * @return the target cache
-     */
-    public ACache getTargetCache() {
-        return targetCache;
-    }
+	/**
+	 * Get parameter by name.
+	 * 
+	 * @param name parameter name
+	 * @return the parameter as Object
+	 * @throws NoSuchParameterException if parameter is not exists
+	 */
+	protected Object getParameter(String name) {
+		for (LearningParameter<?> par : learningParameters)
+			if (par.getName().equals(name))
+				return par.getValue();
+		return new NoSuchParameterException(name);
+	}
 
+	/**
+	 * @param par parameter name
+	 * @param val parameter value
+	 */
+	public void setParameter(String par, Object val) {
+		for (LearningParameter lp : learningParameters)
+			if (lp.getName().equals(par)) {
+				if (val instanceof String) {
+					if (Number.class.isAssignableFrom(lp.getClazz())) {
+						try {
+							Number res = NumberFormat.getInstance().parse((String) val);
+							if (lp.getClazz() == Integer.class) {
+								lp.setValue(res.intValue());
+							}else if(lp.getClazz() == Float.class) {
+								lp.setValue(res.floatValue());
+							}else if(lp.getClazz() == Short.class) {
+								lp.setValue(res.shortValue());
+							}else if(lp.getClazz() == Byte.class) {
+								lp.setValue(res.byteValue());
+							}else {
+								lp.setValue(res);
+							}
+						} catch (ParseException e) {
+							throw new IllegalArgumentException("Parameter "+par+" should be of type "+lp.getClazz()+", but is "+val.getClass()+". Parsing did not succeed.");
+							
+						}
+					}else if(Boolean.class.isAssignableFrom(lp.getClazz())) {
+						lp.setValue(Boolean.parseBoolean((String) val));
+					}
+				} else {
+					if (lp.getClazz() == val.getClass()) {
+					lp.setValue(lp.getClazz().cast(val));}
+					else {
+						throw new IllegalArgumentException("Parameter "+par+" should be of type "+lp.getClazz()+", but is "+val.getClass());
+					}
+				}
+				return;
+			}
+		// if not found
+		throw new NoSuchParameterException(par);
+	}
+
+	/**
+	 * @return the source cache
+	 */
+	public ACache getSourceCache() {
+		return sourceCache;
+	}
+
+	/**
+	 * @return the target cache
+	 */
+	public ACache getTargetCache() {
+		return targetCache;
+	}
 
 }

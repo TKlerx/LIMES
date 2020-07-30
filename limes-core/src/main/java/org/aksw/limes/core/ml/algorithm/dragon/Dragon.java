@@ -206,7 +206,7 @@ public class Dragon extends ACoreMLAlgorithm {
     }
 
     @Override
-    public void init(List<LearningParameter> lp, ACache sourceCache, ACache targetCache) {
+    public void init(List<LearningParameter<?>> lp, ACache sourceCache, ACache targetCache) {
         super.init(lp, sourceCache, targetCache);
         this.prediction = null;
         if (lp == null) {
@@ -241,29 +241,27 @@ public class Dragon extends ACoreMLAlgorithm {
     @Override
     public void setDefaultParameters() {
         learningParameters = new ArrayList<>();
-        learningParameters.add(new LearningParameter(PARAMETER_PRUNING_CONFIDENCE, pruningConfidence, Double.class, 0d,
+        learningParameters.add(new LearningParameter<Double>(PARAMETER_PRUNING_CONFIDENCE, pruningConfidence, 0d,
                 1d, 0.01d, PARAMETER_PRUNING_CONFIDENCE));
-        learningParameters.add(new LearningParameter(PARAMETER_PROPERTY_MAPPING, new PropertyMapping(),
-                PropertyMapping.class, Double.NaN, Double.NaN, Double.NaN, PARAMETER_PROPERTY_MAPPING));
-        learningParameters.add(new LearningParameter(PARAMETER_MAPPING, initialMapping, AMapping.class, Double.NaN,
-                Double.NaN, Double.NaN, PARAMETER_MAPPING));
-        learningParameters.add(new LearningParameter(PARAMETER_MAX_LINK_SPEC_HEIGHT, maxLinkSpecHeight, Integer.class,
+        learningParameters.add(new LearningParameter<PropertyMapping>(PARAMETER_PROPERTY_MAPPING,new PropertyMapping(),
+        		null, null, null, PARAMETER_PROPERTY_MAPPING));
+        learningParameters.add(new LearningParameter<AMapping>(PARAMETER_MAPPING, initialMapping, null, null, null, PARAMETER_MAPPING));
+        learningParameters.add(new LearningParameter<Integer>(PARAMETER_MAX_LINK_SPEC_HEIGHT, maxLinkSpecHeight, 
                 1, 100000, 1, PARAMETER_MAX_LINK_SPEC_HEIGHT));
-        learningParameters.add(new LearningParameter(PARAMETER_MIN_PROPERTY_COVERAGE, minPropertyCoverage, Double.class,
+        learningParameters.add(new LearningParameter<Double>(PARAMETER_MIN_PROPERTY_COVERAGE, minPropertyCoverage,
                 0d, 1d, 0.01d, PARAMETER_MIN_PROPERTY_COVERAGE));
-        learningParameters.add(new LearningParameter(PARAMETER_PROPERTY_LEARNING_RATE, propertyLearningRate,
-                Double.class, 0d, 1d, 0.01d, PARAMETER_PROPERTY_LEARNING_RATE));
-        learningParameters.add(new LearningParameter(PARAMETER_FITNESS_FUNCTION, fitnessFunction,
-                FitnessFunctionDTL.class, new String[] { FITNESS_NAME_GINI_INDEX, FITNESS_NAME_GLOBAL_FMEASURE },
+        learningParameters.add(new LearningParameter<Double>(PARAMETER_PROPERTY_LEARNING_RATE, propertyLearningRate,
+                 0d, 1d, 0.01d, PARAMETER_PROPERTY_LEARNING_RATE));
+        learningParameters.add(new LearningParameter<FitnessFunctionDTL>(PARAMETER_FITNESS_FUNCTION, fitnessFunction
+                , new String[] { FITNESS_NAME_GINI_INDEX, FITNESS_NAME_GLOBAL_FMEASURE },
                 PARAMETER_FITNESS_FUNCTION));
         learningParameters
-                .add(new LearningParameter(PARAMETER_PRUNING_FUNCTION, pruningFunction, PruningFunctionDTL.class,
+                .add(new LearningParameter<PruningFunctionDTL>(PARAMETER_PRUNING_FUNCTION, pruningFunction,
                         new String[] { PRUNING_NAME_ERROR_ESTIMATE_PRUNING, PRUNING_NAME_GLOBAL_FMEASURE },
                         PARAMETER_FITNESS_FUNCTION));
+		Set<MeasureType> measures = new HashSet<MeasureType>(Arrays.asList(MeasureType.JACCARD, MeasureType.TRIGRAM, MeasureType.COSINE, MeasureType.QGRAMS));
 
-        Set<String> measures = new HashSet<>(Arrays.asList("jaccard", "trigrams", "cosine", "qgrams"));
-        learningParameters.add(new LearningParameter(Dragon.PARAMETER_ATOMIC_MEASURES, measures, MeasureType.class, 0,
-                0, 0, Dragon.PARAMETER_ATOMIC_MEASURES));
+        learningParameters.add(new LearningParameter<Set<MeasureType>>(Dragon.PARAMETER_ATOMIC_MEASURES, measures, null, null, null, Dragon.PARAMETER_ATOMIC_MEASURES));
     }
 
     @Override

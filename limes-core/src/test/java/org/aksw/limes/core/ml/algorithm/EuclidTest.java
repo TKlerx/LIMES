@@ -54,7 +54,7 @@ public class EuclidTest extends MLAlgorithmTest{
         assert (unsupEuclid.getClass().equals(UnsupervisedMLAlgorithm.class));
         unsupEuclid.getMl().setDefaultParameters();
         
-        List<LearningParameter> params = new ArrayList<LearningParameter>(5);
+        List<LearningParameter<?>> params = new ArrayList<>(5);
         params.add(new LearningParameter(LinearEuclid.ITERATIONS_MAX, 30));
         params.add(new LearningParameter(LinearEuclid.KAPPA, 0.8));
         params.add(new LearningParameter(LinearEuclid.LEARNING_RATE, 0.25));
@@ -115,7 +115,7 @@ public class EuclidTest extends MLAlgorithmTest{
        
         euclid.getMl().setDefaultParameters();
         
-        List<LearningParameter> params = new ArrayList<LearningParameter>(5);
+        List<LearningParameter<?>> params = new ArrayList<>(5);
         params.add(new LearningParameter(LinearEuclid.ITERATIONS_MAX, 30));
         params.add(new LearningParameter(LinearEuclid.KAPPA, 0.8));
         params.add(new LearningParameter(LinearEuclid.LEARNING_RATE, 0.25));

@@ -1,18 +1,18 @@
 package org.aksw.limes.core.ml.algorithm;
 
+import java.util.Objects;
 
 /**
  * @author sherif
  *
  */
-public class LearningParameter {
+public class LearningParameter<T> {
 
     protected String name;
-    protected Object value;
-    protected Class<?> clazz;
-    protected double rangeStart;
-    protected double rangeEnd;
-    protected double rangeStep;
+    protected T value;
+    protected T rangeStart;
+    protected T rangeEnd;
+    protected T rangeStep;
     protected String description;
     protected String[] instanceOptions;
 
@@ -31,7 +31,7 @@ public class LearningParameter {
      * @param name parameter's name
      * @param value parameter's value
      */
-    public LearningParameter(String name, Object value) {
+    public LearningParameter(String name, T value) {
         this();
         this.name = name;
         this.value = value;
@@ -48,10 +48,9 @@ public class LearningParameter {
      * @param rangeStep parameter's range step
      * @param description parameter's description
      */
-    public LearningParameter(String name, Object value, Class<?> clazz, double rangeStart, double rangeEnd,
-            double rangeStep, String description) {
+    public LearningParameter(String name, T value, T rangeStart, T rangeEnd,
+            T rangeStep, String description) {
         this(name, value);
-        this.clazz = clazz;
         this.rangeStart = rangeStart;
         this.rangeEnd = rangeEnd;
         this.rangeStep = rangeStep;
@@ -59,9 +58,8 @@ public class LearningParameter {
     }
     
     
-    public LearningParameter(String name, Object value, Class<?> clazz, String[] instanceOptions, String description) {
+    public LearningParameter(String name, T value, String[] instanceOptions, String description) {
         this(name, value);
-        this.clazz = clazz;
         this.instanceOptions = instanceOptions;
         this.description = description;
     }
@@ -76,14 +74,14 @@ public class LearningParameter {
     /**
      * @return parameter's range step
      */
-    public double getRangeStep() {
+    public T getRangeStep() {
         return rangeStep;
     }
 
     /**
      * @param rangeStep to be set
      */
-    public void setRangeStep(double rangeStep) {
+    public void setRangeStep(T rangeStep) {
         this.rangeStep = rangeStep;
     }
 
@@ -104,56 +102,50 @@ public class LearningParameter {
     /**
      * @return parameter's value
      */
-    public Object getValue() {
+    public T getValue() {
         return value;
     }
     
     /**
-     * @param value to be set
+     * @param object to be set
      */
-    public void setValue(Object value) {
-        this.value = value;
+    public void setValue(T object) {
+        this.value = object;
     }
     
     /**
      * @return parameter's class 
      */
     public Class<?> getClazz() {
-        return clazz;
+        return value.getClass();
     }
     
-    /**
-     * @param clazz to be set
-     */
-    public void setClazz(Class<?> clazz) {
-        this.clazz = clazz;
-    }
     
     /**
      * @return parameter's range start as double
      */
-    public double getRangeStart() {
+    public T getRangeStart() {
         return rangeStart;
     }
     
     /**
      * @param rangeStart to be set
      */
-    public void setRangeStart(double rangeStart) {
+    public void setRangeStart(T rangeStart) {
         this.rangeStart = rangeStart;
     }
     
     /**
      * @return parameter's range end
      */
-    public double getRangeEnd() {
+    public T getRangeEnd() {
         return rangeEnd;
     }
     
     /**
      * @param rangeEnd to be set
      */
-    public void setRangeEnd(double rangeEnd) {
+    public void setRangeEnd(T rangeEnd) {
         this.rangeEnd = rangeEnd;
     }
     
@@ -182,54 +174,26 @@ public class LearningParameter {
 
 
 	@Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((description == null) ? 0 : description.hashCode());
-        result = prime * result + ((name == null) ? 0 : name.hashCode());
-        long temp;
-        temp = Double.doubleToLongBits(rangeEnd);
-        result = prime * result + (int) (temp ^ (temp >>> 32));
-        temp = Double.doubleToLongBits(rangeStart);
-        result = prime * result + (int) (temp ^ (temp >>> 32));
-        temp = Double.doubleToLongBits(rangeStep);
-        result = prime * result + (int) (temp ^ (temp >>> 32));
-        result = prime * result + ((value == null) ? 0 : value.hashCode());
-        return result;
-    }
+	public int hashCode() {
+		return Objects.hash(description, name, rangeEnd, rangeStart, rangeStep, value);
+	}
 
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        LearningParameter other = (LearningParameter) obj;
-        if (description == null) {
-            if (other.description != null)
-                return false;
-        } else if (!description.equals(other.description))
-            return false;
-        if (name == null) {
-            if (other.name != null)
-                return false;
-        } else if (!name.equals(other.name))
-            return false;
-        if (Double.doubleToLongBits(rangeEnd) != Double.doubleToLongBits(other.rangeEnd))
-            return false;
-        if (Double.doubleToLongBits(rangeStart) != Double.doubleToLongBits(other.rangeStart))
-            return false;
-        if (Double.doubleToLongBits(rangeStep) != Double.doubleToLongBits(other.rangeStep))
-            return false;
-        if (value == null) {
-            if (other.value != null)
-                return false;
-        } else if (!value.toString().equals(other.value.toString()))
-            return false;
-        return true;
-    }
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		LearningParameter other = (LearningParameter) obj;
+		return Objects.equals(description, other.description) && Objects.equals(name, other.name)
+				&& Objects.equals(rangeEnd, other.rangeEnd) && Objects.equals(rangeStart, other.rangeStart)
+				&& Objects.equals(rangeStep, other.rangeStep) && Objects.equals(value, other.value);
+	}
+
+
     
 
 }

@@ -96,13 +96,13 @@ public class EvaluatorsTest {
 
 	@Test
 	public void testCreateParameterGrid() {
-		LearningParameter lp1 = new LearningParameter("lp1", 0, Integer.class, 0d, 100d, 1d, "");
-		LearningParameter lp2 = new LearningParameter("lp2", 0.1, Double.class, 0d, 1d, 0.1d, "");
-		LearningParameter lp3 = new LearningParameter("lp3", "test", String.class, new String[] { "a", "b" }, "");
+		LearningParameter<Integer> lp1 = new LearningParameter<>("lp1", 0, 0, 100, 1, "");
+		LearningParameter<Double> lp2 = new LearningParameter<>("lp2", 0.1, 0d, 1d, 0.1d, "");
+		LearningParameter<String> lp3 = new LearningParameter<>("lp3", "test", new String[] { "a", "b" }, "");
 		List<Object> lp1Values = ImmutableList.of(0, 10, 20, 30, 50, 80);
 		List<Object> lp2Values = ImmutableList.of(0.0, 0.1, 0.2, 0.3, 0.4, 0.5);
 		List<Object> lp3Values = ImmutableList.of("a", "b");
-		Map<LearningParameter, List<Object>> params = new HashMap<>();
+		Map<LearningParameter<?>, List<Object>> params = new HashMap<>();
 		params.put(lp1, lp1Values);
 		params.put(lp2, lp2Values);
 		params.put(lp3, lp3Values);

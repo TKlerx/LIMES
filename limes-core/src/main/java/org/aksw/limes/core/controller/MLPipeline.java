@@ -42,7 +42,7 @@ public class MLPipeline {
             Configuration configuration,
             String mlAlgorithmName,
             MLImplementationType mlImplementationType,
-            List<LearningParameter> learningParameters,
+            List<LearningParameter<?>> learningParameters,
             String trainingDataFile,
             EvaluatorType pfmType,
             int maxIt,

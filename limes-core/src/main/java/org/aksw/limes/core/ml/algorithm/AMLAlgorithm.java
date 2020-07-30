@@ -35,7 +35,7 @@ public abstract class AMLAlgorithm {
      * @param source the source cache
      * @param target the target cache
      */
-    public void init(List<LearningParameter> lp, ACache source, ACache target) {
+    public void init(List<LearningParameter<?>> lp, ACache source, ACache target) {
         getMl().init(lp, source, target);
     }
 
@@ -75,7 +75,7 @@ public abstract class AMLAlgorithm {
     /**
      * @return the learning parameters
      */
-    public List<LearningParameter> getParameters() {
+    public List<LearningParameter<?>> getParameters() {
         return getMl().getParameters();
     }
 

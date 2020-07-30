@@ -21,23 +21,23 @@ public class TaskAlgorithm {
     /** The machine learning algorithm method such as EAGLE, WOMBAT and  LION */
     private AMLAlgorithm mlAlgorithm;
     /** The parameters required by the machine learning algorithm*/
-    private List<LearningParameter> mlParameter;
+    private List<LearningParameter<?>> mlParameter;
 	/** parameter values to explore in grid search */
-	private Map<LearningParameter, List<Object>> mlParameterValues;
+	private Map<LearningParameter<?>, List<Object>> mlParameterValues;
 
 	private String name;
 
     public TaskAlgorithm() {
     }
     
-    public TaskAlgorithm(MLImplementationType mlType,AMLAlgorithm mlAlgorithm,List<LearningParameter> mlParameter) {
+    public TaskAlgorithm(MLImplementationType mlType,AMLAlgorithm mlAlgorithm,List<LearningParameter<?>> mlParameter) {
         this.mlType = mlType;
         this.mlAlgorithm=mlAlgorithm;
         this.mlParameter=mlParameter;
     }
 
-	public TaskAlgorithm(MLImplementationType mlType, AMLAlgorithm mlAlgorithm, List<LearningParameter> mlParameter,
-			Map<LearningParameter, List<Object>> mlParameterValues) {
+	public TaskAlgorithm(MLImplementationType mlType, AMLAlgorithm mlAlgorithm, List<LearningParameter<?>> mlParameter,
+			Map<LearningParameter<?>, List<Object>> mlParameterValues) {
 		this.mlType = mlType;
 		this.mlAlgorithm = mlAlgorithm;
 		this.mlParameter = mlParameter;
@@ -60,19 +60,19 @@ public class TaskAlgorithm {
         this.mlAlgorithm = mlAlgorithm;
     }
 
-    public List<LearningParameter> getMlParameter() {
+    public List<LearningParameter<?>> getMlParameter() {
         return mlParameter;
     }
 
-    public void setMlParameter(List<LearningParameter> mlParameter) {
+    public void setMlParameter(List<LearningParameter<?>> mlParameter) {
         this.mlParameter = mlParameter;
     }
 
-	public Map<LearningParameter, List<Object>> getMlParameterValues() {
+	public Map<LearningParameter<?>, List<Object>> getMlParameterValues() {
 		return mlParameterValues;
 	}
 
-	public void setMlParameterValues(Map<LearningParameter, List<Object>> mlParameterValues) {
+	public void setMlParameterValues(Map<LearningParameter<?>, List<Object>> mlParameterValues) {
 		this.mlParameterValues = mlParameterValues;
 	}
 

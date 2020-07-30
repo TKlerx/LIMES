@@ -52,7 +52,7 @@ public class Configuration implements IConfiguration {
     protected int granularity = 2;
 
     protected String mlAlgorithmName = new String();
-    protected List<LearningParameter> mlAlgorithmParameters = new ArrayList<>();
+    protected List<LearningParameter<?>> mlAlgorithmParameters = new ArrayList<>();
     protected MLImplementationType mlImplementationType = MLImplementationType.UNSUPERVISED;
     protected String mlTrainingDataFile = null;
     protected EvaluatorType mlPseudoFMeasure = null;
@@ -64,7 +64,7 @@ public class Configuration implements IConfiguration {
             String verificationRelation, double acceptanceThreshold, String acceptanceFile,
             double verificationThreshold, String verificationFile, Map<String, String> prefixes, String outputFormat,
             String executionRewriter, String executionPlanner, String executionEngine, int granularity,
-            String mlAlgorithmName, List<LearningParameter> mlParameters, MLImplementationType mlImplementationType,
+            String mlAlgorithmName, List<LearningParameter<?>> mlParameters, MLImplementationType mlImplementationType,
             String mlTrainingDataFile, EvaluatorType mlPseudoFMeasure, long maxOpt, double k) {
         super();
         this.prefixes = prefixes;
@@ -91,8 +91,8 @@ public class Configuration implements IConfiguration {
         this.expectedSelectivity = k;
     }
 
-    public void addMlAlgorithmParameter(String mlParameterName, Object mlParameterValue) {
-        LearningParameter lp = new LearningParameter();
+    public <T>void addMlAlgorithmParameter(String mlParameterName, T mlParameterValue) {
+        LearningParameter<T> lp = new LearningParameter<>();
         lp.setName(mlParameterName);
         lp.setValue(mlParameterValue);
         this.mlAlgorithmParameters.add(lp);
@@ -138,7 +138,7 @@ public class Configuration implements IConfiguration {
         return mlImplementationType;
     }
 
-    public List<LearningParameter> getMlAlgorithmParameters() {
+    public List<LearningParameter<?>> getMlAlgorithmParameters() {
         return mlAlgorithmParameters;
     }
 
@@ -468,7 +468,7 @@ public class Configuration implements IConfiguration {
         this.prefixes = prefixes;
     }
 
-    public void setMlAlgorithmParameters(List<LearningParameter> mlParameters) {
+    public void setMlAlgorithmParameters(List<LearningParameter<?>> mlParameters) {
         this.mlAlgorithmParameters = mlParameters;
     }
 

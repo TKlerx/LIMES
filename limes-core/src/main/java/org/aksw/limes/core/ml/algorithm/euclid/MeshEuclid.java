@@ -25,7 +25,7 @@ public class MeshEuclid extends BooleanEuclid {
 	public static final String GRID_POINTS = "grid_points";
 
 	 @Override
-	 protected void init(List<LearningParameter> learningParameters, ACache sourceCache, ACache targetCache) {
+	 protected void init(List<LearningParameter<?>> learningParameters, ACache sourceCache, ACache targetCache) {
 	  	setDefaultParameters();
 	   	super.init(learningParameters, sourceCache, targetCache);
 	   	lsc = new MeshBasedSelfConfigurator(sourceCache, targetCache);
@@ -34,7 +34,7 @@ public class MeshEuclid extends BooleanEuclid {
 	public void setDefaultParameters() {   
 	    int grid_points = 5;
 		super.setDefaultParameters();
-		learningParameters.add(new LearningParameter(GRID_POINTS, grid_points, Integer.class, 0d, 1d, 1, GRID_POINTS));
+		learningParameters.add(new LearningParameter<Integer>(GRID_POINTS, grid_points, 0, 1, 1, GRID_POINTS));
 	}
 
 	

@@ -126,15 +126,15 @@ public class XMLConfigurationReaderTest {
     @Test
     public void testXmlReaderMLAlgorithm() {
 
-        List<LearningParameter> mlParameters = new ArrayList<>();
-        LearningParameter lp = new LearningParameter();
-        lp.setName("max execution time in minutes");
-        lp.setValue(60);
-        mlParameters.add(lp);
-        lp = new LearningParameter();
-        lp.setName("beta");
-        lp.setValue(5.0);
-        mlParameters.add(lp);
+        List<LearningParameter<?>> mlParameters = new ArrayList<>();
+        LearningParameter<Integer> lpMaxExec = new LearningParameter<>();
+        lpMaxExec.setName("max execution time in minutes");
+        lpMaxExec.setValue(60);
+        mlParameters.add(lpMaxExec);
+        LearningParameter<Float> lpBeta = new LearningParameter<Float>();
+        lpBeta.setName("beta");
+        lpBeta.setValue(5.0f);
+        mlParameters.add(lpBeta);
 
         testConf.setMlAlgorithmName("wombat simple");
         testConf.setMlImplementationType(MLImplementationType.UNSUPERVISED);

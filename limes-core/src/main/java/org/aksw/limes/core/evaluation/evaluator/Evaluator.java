@@ -170,7 +170,7 @@ public class Evaluator {
 	 * @version 2016-02-26
 	 */
 	/* Table<String, String, Map<EvaluatorType, Double>> */
-	public List<EvaluationRun> crossValidate(AMLAlgorithm algorithm, List<LearningParameter> parameter,
+	public List<EvaluationRun> crossValidate(AMLAlgorithm algorithm, List<LearningParameter<?>> parameter,
 			Set<TaskData> datasets, int foldNumber, Set<EvaluatorType> qlMeasures,
 			Set<IQuantitativeMeasure> qnMeasures) {
 
@@ -245,11 +245,11 @@ public class Evaluator {
 				for (TaskAlgorithm tAlgo : TaskAlgorithms) {
 					AMLAlgorithm algorithm = tAlgo.getMlAlgorithm();
 					// tune parameters
-					List<LearningParameter> params = null;
+					List<LearningParameter<?>> params = null;
 					if (tAlgo.getMlParameterValues() != null) {
-						Set<List<LearningParameter>> parameterGrid = createParameterGrid(tAlgo.getMlParameterValues());
+						Set<List<LearningParameter<?>>> parameterGrid = createParameterGrid(tAlgo.getMlParameterValues());
 						double bestFM = 0.0;
-						for (List<LearningParameter> lps : parameterGrid) {
+						for (List<LearningParameter<?>> lps : parameterGrid) {
 							MLResults tuneModel = trainModel(algorithm, lps, tuneFolds.get(0).map,
 									dataset.evalData.getConfigReader().read(), tuneFolds.get(0).sourceCache,
 									tuneFolds.get(0).targetCache);
@@ -358,7 +358,7 @@ public class Evaluator {
 		}
 	}
 
-	private MLResults trainModel(AMLAlgorithm algorithm, List<LearningParameter> params, AMapping trainingData,
+	private MLResults trainModel(AMLAlgorithm algorithm, List<LearningParameter<?>> params, AMapping trainingData,
 			Configuration config, ACache trainSourceCache, ACache trainTargetCache) {
 		algorithm.init(params, trainSourceCache, trainTargetCache);
 		algorithm.getMl().setConfiguration(config);
@@ -391,12 +391,12 @@ public class Evaluator {
 		return createFoldDataFromCaches(mappings, trainData.sourceCache, trainData.targetCache);
 	}
 
-	public Set<List<LearningParameter>> createParameterGrid(Map<LearningParameter, List<Object>> parameters) {
-		List<Set<LearningParameter>> grid = new ArrayList<>();
-		for (LearningParameter lp : parameters.keySet()) {
-			Set<LearningParameter> parameterPossibilites = new HashSet<>();
+	public Set<List<LearningParameter<?>>> createParameterGrid(Map<LearningParameter<?>, List<Object>> parameters) {
+		List<Set<LearningParameter<?>>> grid = new ArrayList<>();
+		for (LearningParameter<?> lp : parameters.keySet()) {
+			Set<LearningParameter<?>> parameterPossibilites = new HashSet<>();
 			for (Object value : parameters.get(lp)) {
-				parameterPossibilites.add(new LearningParameter(lp.getName(), value));
+				parameterPossibilites.add(new LearningParameter<>(lp.getName(), value));
 			}
 			grid.add(parameterPossibilites);
 		}
@@ -427,7 +427,7 @@ public class Evaluator {
 	}
 
 	// DELETE ME
-	private static Map<LearningParameter, List<Object>> wombatDefaultParams(double... p) {
+	private static Map<LearningParameter<?>, List<Object>> wombatDefaultParams(double... p) {
 		// default parameters
 		long maxRefineTreeSize = 2000;
 		int maxIterationNumber = 3;
@@ -441,36 +441,36 @@ public class Evaluator {
 		double propertyLearningRate = 0.9;
 		double overallPenaltyWeight = 0.5d;
 		boolean verbose = false;
-		Set<String> simMeasures = new HashSet<>(Arrays.asList("jaccard", "trigrams", "cosine", "qgrams"));
+		Set<MeasureType> simMeasures = new HashSet<MeasureType>(Arrays.asList(MeasureType.JACCARD, MeasureType.TRIGRAM, MeasureType.COSINE, MeasureType.QGRAMS));
 
-		LearningParameter lp1 = new LearningParameter(AWombat.PARAMETER_MAX_REFINEMENT_TREE_SIZE, maxRefineTreeSize,
-				Long.class, 10d, Long.MAX_VALUE, 10d, AWombat.PARAMETER_MAX_REFINEMENT_TREE_SIZE);
-		LearningParameter lp2 = new LearningParameter(AWombat.PARAMETER_MAX_ITERATIONS_NUMBER, maxIterationNumber,
-				Integer.class, 1d, Integer.MAX_VALUE, 10d, AWombat.PARAMETER_MAX_ITERATIONS_NUMBER);
-		LearningParameter lp3 = new LearningParameter(AWombat.PARAMETER_MAX_ITERATION_TIME_IN_MINUTES,
-				maxIterationTimeInMin, Integer.class, 1d, Integer.MAX_VALUE, 1,
+		LearningParameter<Long> lp1 = new LearningParameter<>(AWombat.PARAMETER_MAX_REFINEMENT_TREE_SIZE, maxRefineTreeSize,
+				10l, Long.MAX_VALUE, 10l, AWombat.PARAMETER_MAX_REFINEMENT_TREE_SIZE);
+		LearningParameter<Integer> lp2 = new LearningParameter<>(AWombat.PARAMETER_MAX_ITERATIONS_NUMBER, maxIterationNumber,
+				1, Integer.MAX_VALUE, 10, AWombat.PARAMETER_MAX_ITERATIONS_NUMBER);
+		LearningParameter<Integer> lp3 = new LearningParameter<>(AWombat.PARAMETER_MAX_ITERATION_TIME_IN_MINUTES,
+				maxIterationTimeInMin, 1, Integer.MAX_VALUE, 1,
 				AWombat.PARAMETER_MAX_ITERATION_TIME_IN_MINUTES);
-		LearningParameter lp4 = new LearningParameter(AWombat.PARAMETER_EXECUTION_TIME_IN_MINUTES,
-				maxExecutionTimeInMin, Integer.class, 1d, Integer.MAX_VALUE, 1,
+		LearningParameter<Integer> lp4 = new LearningParameter<>(AWombat.PARAMETER_EXECUTION_TIME_IN_MINUTES,
+				maxExecutionTimeInMin, 1, Integer.MAX_VALUE, 1,
 				AWombat.PARAMETER_EXECUTION_TIME_IN_MINUTES);
-		LearningParameter lp5 = new LearningParameter(AWombat.PARAMETER_MAX_FITNESS_THRESHOLD, maxFitnessThreshold,
-				Double.class, 0d, 1d, 0.01d, AWombat.PARAMETER_MAX_FITNESS_THRESHOLD);
-		LearningParameter lpMinPropC = new LearningParameter(AWombat.PARAMETER_MIN_PROPERTY_COVERAGE,
-				minPropertyCoverage, Double.class, 0d, 1d, 0.01d, AWombat.PARAMETER_MIN_PROPERTY_COVERAGE);
-		LearningParameter lpMinPropLR = new LearningParameter(AWombat.PARAMETER_PROPERTY_LEARNING_RATE,
-				propertyLearningRate, Double.class, 0d, 1d, 0.01d, AWombat.PARAMETER_PROPERTY_LEARNING_RATE);
-		LearningParameter lp8 = new LearningParameter(AWombat.PARAMETER_OVERALL_PENALTY_WEIGHT, overallPenaltyWeight,
-				Double.class, 0d, 1d, 0.01d, AWombat.PARAMETER_OVERALL_PENALTY_WEIGHT);
-		LearningParameter lp9 = new LearningParameter(AWombat.PARAMETER_CHILDREN_PENALTY_WEIGHT, childrenPenaltyWeight,
-				Double.class, 0d, 1d, 0.01d, AWombat.PARAMETER_CHILDREN_PENALTY_WEIGHT);
-		LearningParameter lp10 = new LearningParameter(AWombat.PARAMETER_COMPLEXITY_PENALTY_WEIGHT,
-				complexityPenaltyWeight, Double.class, 0d, 1d, 0.01d, AWombat.PARAMETER_COMPLEXITY_PENALTY_WEIGHT);
-		LearningParameter lp11 = new LearningParameter(AWombat.PARAMETER_VERBOSE, verbose, Boolean.class, 0, 1, 0,
+		LearningParameter<Double> lp5 = new LearningParameter<>(AWombat.PARAMETER_MAX_FITNESS_THRESHOLD, maxFitnessThreshold,
+				0d, 1d, 0.01d, AWombat.PARAMETER_MAX_FITNESS_THRESHOLD);
+		LearningParameter<Double> lpMinPropC = new LearningParameter<>(AWombat.PARAMETER_MIN_PROPERTY_COVERAGE,
+				minPropertyCoverage, 0d, 1d, 0.01d, AWombat.PARAMETER_MIN_PROPERTY_COVERAGE);
+		LearningParameter<Double> lpMinPropLR = new LearningParameter<>(AWombat.PARAMETER_PROPERTY_LEARNING_RATE,
+				propertyLearningRate, 0d, 1d, 0.01d, AWombat.PARAMETER_PROPERTY_LEARNING_RATE);
+		LearningParameter<Double> lp8 = new LearningParameter<>(AWombat.PARAMETER_OVERALL_PENALTY_WEIGHT, overallPenaltyWeight,
+				 0d, 1d, 0.01d, AWombat.PARAMETER_OVERALL_PENALTY_WEIGHT);
+		LearningParameter<Double> lp9 = new LearningParameter<>(AWombat.PARAMETER_CHILDREN_PENALTY_WEIGHT, childrenPenaltyWeight,
+				0d, 1d, 0.01d, AWombat.PARAMETER_CHILDREN_PENALTY_WEIGHT);
+		LearningParameter<Double> lp10 = new LearningParameter<>(AWombat.PARAMETER_COMPLEXITY_PENALTY_WEIGHT,
+				complexityPenaltyWeight, 0d, 1d, 0.01d, AWombat.PARAMETER_COMPLEXITY_PENALTY_WEIGHT);
+		LearningParameter<Boolean> lp11 = new LearningParameter<>(AWombat.PARAMETER_VERBOSE, verbose, false, true, null,
 				AWombat.PARAMETER_VERBOSE);
-		LearningParameter lp12 = new LearningParameter(AWombat.PARAMETER_ATOMIC_MEASURES, simMeasures,
-				MeasureType.class, 0, 0, 0, AWombat.PARAMETER_ATOMIC_MEASURES);
-		LearningParameter lp13 = new LearningParameter(AWombat.PARAMETER_SAVE_MAPPING, saveMapping, Boolean.class, 0, 1,
-				0, AWombat.PARAMETER_SAVE_MAPPING);
+		LearningParameter<Set<MeasureType>> lp12 = new LearningParameter<>(AWombat.PARAMETER_ATOMIC_MEASURES, simMeasures,
+				null, null, null, AWombat.PARAMETER_ATOMIC_MEASURES);
+		LearningParameter<Boolean> lp13 = new LearningParameter<>(AWombat.PARAMETER_SAVE_MAPPING, saveMapping, false, true,
+				null, AWombat.PARAMETER_SAVE_MAPPING);
 
 		List<Object> lp1Values = ImmutableList.of(maxRefineTreeSize);
 		List<Object> lp2Values = ImmutableList.of(maxIterationNumber);
@@ -485,7 +485,7 @@ public class Evaluator {
 		List<Object> lp11Values = ImmutableList.of(verbose);
 		List<Object> lp12Values = ImmutableList.of(simMeasures);
 		List<Object> lp13Values = ImmutableList.of(saveMapping);
-		Map<LearningParameter, List<Object>> params = new HashMap<>();
+		Map<LearningParameter<?>, List<Object>> params = new HashMap<>();
 		params.put(lp1, lp1Values);
 		params.put(lp2, lp2Values);
 		params.put(lp3, lp3Values);

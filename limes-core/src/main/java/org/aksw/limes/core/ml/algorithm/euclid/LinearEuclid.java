@@ -38,7 +38,7 @@ public class LinearEuclid extends ACoreMLAlgorithm{
     
     
     @Override
-    protected void init(List<LearningParameter> learningParameters, ACache sourceCache, ACache targetCache) {
+    protected void init(List<LearningParameter<?>> learningParameters, ACache sourceCache, ACache targetCache) {
     	setDefaultParameters();
     	super.init(learningParameters, sourceCache, targetCache);
     	lsc = new LinearSelfConfigurator(sourceCache, targetCache);
@@ -52,13 +52,13 @@ public class LinearEuclid extends ACoreMLAlgorithm{
 	@Override
 	public void setDefaultParameters() {
         learningParameters = new ArrayList<>();
-        learningParameters.add(new LearningParameter(ITERATIONS_MAX, 5, Integer.class, 1, Integer.MAX_VALUE, 1, "Maximal number of iterations EUCLID tries to refine its results."));
-    	learningParameters.add(new LearningParameter(BETA, 1.0, Double.class, 0d, 1d, Double.NaN, "Shifts F-Measures towards precision or recall"));
-    	learningParameters.add(new LearningParameter(STRICT, true, Boolean.class, -1, 1, 2,  STRICT));
-    	learningParameters.add(new LearningParameter(MIN_THRESHOLD, 0.1, Double.class, 0d, 1d, Double.NaN, MIN_THRESHOLD));
-    	learningParameters.add(new LearningParameter(KAPPA, 0.8, Double.class, 0d, 1d, Double.NaN, KAPPA));
-    	learningParameters.add(new LearningParameter(LEARNING_RATE, 0.125, Double.class, 0d, 1d, Double.NaN, "Step range of each LSs treshold"));
-    	learningParameters.add(new LearningParameter(MIN_COVERAGE, 0.9, Double.class, 0d, 1d, Double.NaN, "Coverage percentage of a property over all instances"));
+        learningParameters.add(new LearningParameter<Integer>(ITERATIONS_MAX, 5, 1, Integer.MAX_VALUE, 1, "Maximal number of iterations EUCLID tries to refine its results."));
+    	learningParameters.add(new LearningParameter<Double>(BETA, 1.0, 0d, 1d, Double.NaN, "Shifts F-Measures towards precision or recall"));
+    	learningParameters.add(new LearningParameter<Boolean>(STRICT, true, false, true, null,  STRICT));
+    	learningParameters.add(new LearningParameter<Double>(MIN_THRESHOLD, 0.1, 0d, 1d, Double.NaN, MIN_THRESHOLD));
+    	learningParameters.add(new LearningParameter<Double>(KAPPA, 0.8, 0d, 1d, Double.NaN, KAPPA));
+    	learningParameters.add(new LearningParameter<Double>(LEARNING_RATE, 0.125, 0d, 1d, Double.NaN, "Step range of each LSs treshold"));
+    	learningParameters.add(new LearningParameter<Double>(MIN_COVERAGE, 0.9, 0d, 1d, Double.NaN, "Coverage percentage of a property over all instances"));
 	}
 
 	/**

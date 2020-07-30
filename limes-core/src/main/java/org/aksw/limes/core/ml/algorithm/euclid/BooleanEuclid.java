@@ -25,7 +25,7 @@ public class BooleanEuclid extends LinearEuclid{
 	public static final String MAX_THRESHOLD = "max_threshold";
 	
 	 @Override
-	 protected void init(List<LearningParameter> learningParameters, ACache sourceCache, ACache targetCache) {
+	 protected void init(List<LearningParameter<?>> learningParameters, ACache sourceCache, ACache targetCache) {
 	  	setDefaultParameters();
 	   	super.init(learningParameters, sourceCache, targetCache);
 	   	lsc = new BooleanSelfConfigurator(sourceCache, targetCache);
@@ -35,7 +35,7 @@ public class BooleanEuclid extends LinearEuclid{
 	public void setDefaultParameters() {    // execution mode. STRICT = true leads to a strong bias towards precision by
 	    double max_thres = 1.0;
 		super.setDefaultParameters();
-		learningParameters.add(new LearningParameter(MAX_THRESHOLD, max_thres, Double.class, 0d, 1d, Double.NaN, MAX_THRESHOLD));
+		learningParameters.add(new LearningParameter<Double>(MAX_THRESHOLD, max_thres, 0d, 1d, Double.NaN, MAX_THRESHOLD));
     }
 
 	

@@ -16,7 +16,7 @@ public class ACIDS extends ACoreMLAlgorithm {
     }
 
     @Override
-    protected void init(List<LearningParameter> lp, ACache source, ACache target) {
+    protected void init(List<LearningParameter<?>> lp, ACache source, ACache target) {
         super.init(lp, source, target);
         // TODO
         throw new NotYetImplementedException("ACIDS algorithm was not implemented into this version of LIMES.");

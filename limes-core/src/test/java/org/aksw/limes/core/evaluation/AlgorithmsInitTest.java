@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.aksw.limes.core.datastrutures.TaskAlgorithm;
 import org.aksw.limes.core.exceptions.UnsupportedMLImplementationException;
@@ -46,7 +47,7 @@ public class AlgorithmsInitTest {
                 String[] algorithmTitles = algorithmItem.split(":");// split to get the type and the name of the algorithm
                 MLImplementationType algType = MLImplementationType.valueOf(algorithmTitles[0]);// get the type of the algorithm
 
-                List<LearningParameter> mlParameter = null;
+                List<LearningParameter<?>> mlParameter = null;
                 AMLAlgorithm mlAlgorithm = null;
                 //check the mlImplementation Type
                 if(algType.equals(MLImplementationType.SUPERVISED_ACTIVE))
@@ -99,8 +100,8 @@ public class AlgorithmsInitTest {
         return mlAlgorithms;
     }
 
-     private List<LearningParameter> initializeLearningParameters(MLImplementationType mlType, String className) {
-        List<LearningParameter> lParameters = null;
+     private List<LearningParameter<?>> initializeLearningParameters(MLImplementationType mlType, String className) {
+        List<LearningParameter<?>> lParameters = null;
         if(mlType.equals(MLImplementationType.UNSUPERVISED))
         {
             if(className.equals("WOMBATSIMPLE") || className.equals("WOMBATCOMPLETE"))
@@ -123,23 +124,25 @@ public class AlgorithmsInitTest {
 
     }
 
-    private List<LearningParameter> initializeWombatSimple()
+    private List<LearningParameter<?>> initializeWombatSimple()
     {
-        List<LearningParameter> wombaParameters = new ArrayList<>() ;
+        List<LearningParameter<?>> wombaParameters = new ArrayList<>() ;
 
-        wombaParameters.add(new LearningParameter("max refinement tree size", 2000, Integer.class, 10, Integer.MAX_VALUE, 10d, "max refinement tree size"));
-        wombaParameters.add(new LearningParameter("max iterations number", 3, Integer.class, 1d, Integer.MAX_VALUE, 10d, "max iterations number"));
-        wombaParameters.add(new LearningParameter("max iteration time in minutes", 20, Integer.class, 1d, Integer.MAX_VALUE,1, "max iteration time in minutes"));
-        wombaParameters.add(new LearningParameter("max execution time in minutes", 600, Integer.class, 1d, Integer.MAX_VALUE,1, "max execution time in minutes"));
-        wombaParameters.add(new LearningParameter("max fitness threshold", 1, Double.class, 0d, 1d, 0.01d, "max fitness threshold"));
-        wombaParameters.add(new LearningParameter("minimum properity coverage", 0.4, Double.class, 0d, 1d, 0.01d, "minimum properity coverage"));
-        wombaParameters.add(new LearningParameter("properity learning rate", 0.9, Double.class, 0d, 1d, 0.01d, "properity learning rate"));
-        wombaParameters.add(new LearningParameter("overall penalty weit", 0.5, Double.class, 0d, 1d, 0.01d, "overall penalty weit"));
-        wombaParameters.add(new LearningParameter("children penalty weit", 1, Double.class, 0d, 1d, 0.01d, "children penalty weit"));
-        wombaParameters.add(new LearningParameter("complexity penalty weit", 1, Double.class, 0d, 1d, 0.01d, "complexity penalty weit"));
-        wombaParameters.add(new LearningParameter("verbose", false, Boolean.class, 0, 1, 0, "verbose"));
-        wombaParameters.add(new LearningParameter("measures", new HashSet<String>(Arrays.asList("jaccard", "trigrams", "cosine", "qgrams")), MeasureType.class, 0, 0, 0, "measures"));
-        wombaParameters.add(new LearningParameter("save mapping", true, Boolean.class, 0, 1, 0, "save mapping"));
+        wombaParameters.add(new LearningParameter<Integer>("max refinement tree size", 2000, 10, Integer.MAX_VALUE, 10, "max refinement tree size"));
+        wombaParameters.add(new LearningParameter<Integer>("max iterations number", 3, 1, Integer.MAX_VALUE, 10, "max iterations number"));
+        wombaParameters.add(new LearningParameter<Integer>("max iteration time in minutes", 20, 1, Integer.MAX_VALUE,1, "max iteration time in minutes"));
+        wombaParameters.add(new LearningParameter<Double>("max execution time in minutes", 600d, 1d, Double.MAX_VALUE,1d, "max execution time in minutes"));
+        wombaParameters.add(new LearningParameter<Double>("max fitness threshold", 1d, 0d, 1d, 0.01d, "max fitness threshold"));
+        wombaParameters.add(new LearningParameter<Double>("minimum properity coverage", 0.4, 0d, 1d, 0.01d, "minimum properity coverage"));
+        wombaParameters.add(new LearningParameter<Double>("properity learning rate", 0.9, 0d, 1d, 0.01d, "properity learning rate"));
+        wombaParameters.add(new LearningParameter<Double>("overall penalty weit", 0.5d, 0d, 1d, 0.01d, "overall penalty weit"));
+        wombaParameters.add(new LearningParameter<Double>("children penalty weit", 1d, 0d, 1d, 0.01d, "children penalty weit"));
+        wombaParameters.add(new LearningParameter<Double>("complexity penalty weit", 1d, 0d, 1d, 0.01d, "complexity penalty weit"));
+        wombaParameters.add(new LearningParameter<Boolean>("verbose", false, false, true, null, "verbose"));
+        wombaParameters.add(new LearningParameter<Set<MeasureType>>("measures", new HashSet<MeasureType>(Arrays.asList(MeasureType.JACCARD, MeasureType.TRIGRAM, MeasureType.COSINE, MeasureType.QGRAMS)), null, null, null, "measures"));
+        wombaParameters.add(new LearningParameter<Boolean>("save mapping", true, false, true, null, "save mapping"));
+
+
 
         return wombaParameters;
     }
